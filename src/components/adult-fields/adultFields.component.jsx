@@ -18,7 +18,7 @@ class AdultFields extends Component {
                                 <div className="input-group-desc">
                                     <input className="input--style-5" type="text" name={`first_name${n}`} required />
                                     <label className="label--desc">first name</label>
-                                </div>
+                                </div> 
                             </div>
                             <div className="col-2">
                                 <div className="input-group-desc">
@@ -54,6 +54,26 @@ class AdultFields extends Component {
                                     <label className="label--desc">Phone Number</label>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="form-row">
+                    <div className="name">Employment Information</div>
+                    <div className="value">
+                    <p>Please list the current employer AND occupation of the tenant mentioned above. If currently unemployed, please specify.</p>
+
+                        <div className="input-group">
+                            <input className="input--style-5" type="text" name={`employment_info${n}`} required />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="form-row">
+                    <div className="name">Time at Current Job</div>
+                    <div className="value">
+                        <div className="input-group">
+                            <input className="input--style-5" type="te" name={`time_at_current_job${n}`} required />
                         </div>
                     </div>
                 </div>

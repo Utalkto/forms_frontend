@@ -20,6 +20,10 @@ class PetFields extends Component {
                         <input type="radio" name="pet_description_info" value="3" required />
                         <span className="checkmark"></span>
                     </label>
+                    <label className="radio-container m-r-45">{`Other - Pet fee to be discussed`}
+                        <input type="radio" name="pet_description_info" value="6" required />
+                        <span className="checkmark"></span>
+                    </label>
                 </div>
             </div>
         );

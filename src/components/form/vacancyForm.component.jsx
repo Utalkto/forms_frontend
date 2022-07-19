@@ -9,12 +9,14 @@ import PetFields from '../pets-fields/petFields.component.jsx';
 
 const link = 'http://localhost:8000/candidates/api/v1/candidates/101';
 const token = 'Token 43302189e044f29f641d6305804b2b865287f098';
+const unitId = 101;
 
 class VacancyForm extends Component{
 
     state = {
         numAdults: 1,
         hasPets: 0,
+        hasChildren: 0,
     }
 
     onAddChild = () => {
@@ -43,14 +45,26 @@ class VacancyForm extends Component{
         });
     }
 
-
     shouldComponentUpdate(nextProps, nextState) { 
-        if (nextState.numAdults !== this.state.numAdults || nextState.hasPets !== this.state.hasPets ) { 
+        if (nextState.numAdults !== this.state.numAdults || 
+            nextState.hasPets !== this.state.hasPets || 
+            nextState.hasChildren !== this.state.hasChildren) { 
           return true;
         }
         return false;
     }
 
+    onHasChildren = () => {
+        this.setState({
+            hasChildren: 1
+        });
+    }
+
+    onDontHasChildren = () => {
+        this.setState({
+            hasChildren: 0
+        });
+    }
 
     onSubmit = (event) => {
         event.preventDefault();
@@ -64,10 +78,12 @@ class VacancyForm extends Component{
 
             let info = {}
             info[`adult${i}`] = {}
-            info[`adult${i}`][`name${i}`] = event.target[current_adult].value + ' ' + event.target[current_adult + 1].value; 
-            info[`adult${i}`][`email${i}`] = event.target[current_adult + 2].value; 
-            info[`adult${i}`][`phone${i}`] = `+${event.target[current_adult + 3].value + event.target[current_adult + 4].value}`; 
-            current_adult += 4
+            info[`adult${i}`][`name`] = event.target[current_adult].value + ' ' + event.target[current_adult + 1].value; 
+            info[`adult${i}`][`email`] = event.target[current_adult + 2].value; 
+            info[`adult${i}`][`phone`] = `+${event.target[current_adult + 3].value + event.target[current_adult + 4].value}`; 
+            info[`adult${i}`][`employment_info`] = `+${event.target[current_adult + 5].value}`; 
+            info[`adult${i}`][`time_at_current_job`] = `+${event.target[current_adult + 6].value}`;
+            current_adult += 7
             adultInfo.push(info)
         }
 
@@ -80,14 +96,9 @@ class VacancyForm extends Component{
         data.expected_renting_duration = event.target.expected_renting_duration_info.value;
         data.duration_of_lease = event.target.duration_of_lease_info.value;
         data.relevant_information = event.target.relevant_information_info.value;
-        data.unit = 101;
+        data.unit = unitId;
         data.number_of_adults = this.state.numAdults;
-        data.availability_date = '2022-07-18';
-        data.current_landlord_name = "landlord_name";
-        data.current_landlord_phone = "phone";
-        data.preferred_move_in_date = "2022-07-18";
-        data.previous_unit_time = "time";
-
+        data.preferred_move_in_date = event.target.preferred_move_in_date_info.value;
 
         if (event.target.pet_info.value === 1) {
             data.pets = event.target.pet_description_info.value;
@@ -95,6 +106,10 @@ class VacancyForm extends Component{
             data.pets = "5";
         }
 
+        if (event.target.number_children_info.value === 1) {
+            data.children_ages = event.target.children_ages_info.value;
+
+        }
 
         const requestOptions = {
             method: 'POST',
@@ -119,7 +134,7 @@ class VacancyForm extends Component{
         const petsComponents = [];
 
         for (let i = 0; i < this.state.numAdults; i++){
-            adultsComponents.push(<AdultFields key={i} n={i} />)
+            adultsComponents.push(<AdultFields state={this.state} key={i} n={i} />)
         }
 
         for (let i = 0; i < this.state.hasPets; i++){
@@ -131,14 +146,30 @@ class VacancyForm extends Component{
                 <div className="wrapper wrapper--w790">
                     <div className="card card-5">
                         <div className="card-heading">
-                            <h2 className="title">Apply for unit</h2>
+                            <h2 className="title">Viewing Request Form</h2>
                         </div>
                         <form onSubmit={this.onSubmit} action="">
 
                             <div className="card-body">
-                                
-                                {adultsComponents}
 
+                            <div className="form-row">
+                                <h5>Please fill out all fields of the form and click "Submit" to request a viewing. It should take less than 3 minutes :)</h5>
+                            </div>
+
+                                {/* moving date */}
+                                <div className="form-row">
+                                    <div className="name">Preferred Move-in Date *</div>
+                                    
+                                    <div className="value">
+                                        <p>Please note this unit is available on August 1st, 2022.</p>
+
+                                        <div className="input-group">
+                                            <input className="input--style-5" type="date" name="preferred_move_in_date_info" required />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {adultsComponents}
 
                                 <div>
                                     <button className="btn btn--radius-2 btn--blue m-r-55" 
@@ -148,12 +179,19 @@ class VacancyForm extends Component{
                                         Add another person
                                     </button>
 
-                                    <button className="btn btn--radius-2 btn--red" 
-                                    type="button"
-                                    onClick={this.onRemoveChild}
-                                    >
-                                        remove a person
-                                    </button>
+                                    {
+                                    
+                                    this.state.numAdults > 1 && 
+                                    
+                                        <button className="btn btn--radius-2 btn--red" 
+                                        type="button"
+                                        onClick={this.onRemoveChild}
+                                        >
+                                            remove a person
+                                        </button>
+                                    }
+
+                                   
                                 </div>
                                 
                                 {/* income information */}
@@ -189,23 +227,40 @@ class VacancyForm extends Component{
                                     <label className="label label--block">Children Info*</label>
                                     <div className="p-t-15">
                                         <label className="radio-container m-r-55">{`No children`}
-                                            <input type="radio" name="number_children_info" value="0" required />
+                                            <input type="radio" name="number_children_info" value="0" onClick={this.onDontHasChildren} required />
                                             <span className="checkmark"></span>
                                         </label>
                                         <label className="radio-container m-r-55">{`1 child`}
-                                            <input type="radio" name="number_children_info" value="1" required />
+                                            <input type="radio" name="number_children_info" value="1" onClick={this.onHasChildren} required />
                                             <span className="checkmark"></span>
                                         </label>
-                                        <label className="radio-container m-r-55">{`2 child`}
-                                            <input type="radio" name="number_children_info" value="2" required />
+                                        <label className="radio-container m-r-55">{`2 children`}
+                                            <input type="radio" name="number_children_info" value="2" onClick={this.onHasChildren} required />
                                             <span className="checkmark"></span>
                                         </label>
-                                        <label className="radio-container m-r-55">{`4 child`}
-                                            <input type="radio" name="number_children_info" value="3" required />
+                                        <label className="radio-container m-r-55">{`3 children`}
+                                            <input type="radio" name="number_children_info" value="3" onClick={this.onHasChildren} required />
+                                            <span className="checkmark"></span>
+                                        </label>
+                                        <label className="radio-container m-r-55">{`4 children`}
+                                            <input type="radio" name="number_children_info" value="4" onClick={this.onHasChildren} required />
                                             <span className="checkmark"></span>
                                         </label>
                                     </div>
                                 </div>
+
+                                {this.state.hasChildren !== 0 &&  
+                                
+                                    <div className="form-row">
+                                        <div className="name">Ages *</div>
+                                        <div className="value">
+                                            <div className="input-group">
+                                                <input className="input--style-5" type="text" name={`ages_info`} required />
+                                            </div>
+                                        </div>
+                                    </div>
+                        
+                                }
 
                                 {/* pets information */}
 
@@ -272,12 +327,25 @@ class VacancyForm extends Component{
                                     </div>
                                 </div>
 
-                                <div className="form-row">
-                                    <div className="name">Expected Renting Duration *</div>
-                                    <div className="value">
-                                        <div className="input-group">
-                                            <input className="input--style-5" type="text" name={`expected_renting_duration_info`} required />
-                                        </div>
+                                <div className="form-row p-t-20">
+                                    <label className="label label--block">Expected Renting Duration *</label>
+                                    <div className="p-t-15">
+                                        <label className="radio-container m-r-55">{`0 - 1 year`}
+                                            <input type="radio" name="expected_renting_duration_info" value="0" required />
+                                            <span className="checkmark"></span>
+                                        </label>
+                                        <label className="radio-container m-r-55">{`1 - 2 years`}
+                                            <input type="radio" name="expected_renting_duration_info" value="1" required />
+                                            <span className="checkmark"></span>
+                                        </label>
+                                        <label className="radio-container m-r-55">{`2 - 3 years`}
+                                            <input type="radio" name="expected_renting_duration_info" value="2" required />
+                                            <span className="checkmark"></span>
+                                        </label>
+                                        <label className="radio-container m-r-55">{`+3 years`}
+                                            <input type="radio" name="expected_renting_duration_info" value="3" required />
+                                            <span className="checkmark"></span>
+                                        </label>
                                     </div>
                                 </div>
 
