@@ -78,12 +78,12 @@ class VacancyForm extends Component{
 
             let info = {}
             info[`adult${i}`] = {}
-            info[`adult${i}`][`name`] = event.target[current_adult].value + ' ' + event.target[current_adult + 1].value; 
-            info[`adult${i}`][`email`] = event.target[current_adult + 2].value; 
-            info[`adult${i}`][`phone`] = `+${event.target[current_adult + 3].value + event.target[current_adult + 4].value}`; 
-            info[`adult${i}`][`employment_info`] = `+${event.target[current_adult + 5].value}`; 
-            info[`adult${i}`][`time_at_current_job`] = `+${event.target[current_adult + 6].value}`;
-            current_adult += 7
+            info[`adult${i}`][`name`] = event.target[current_adult + 1].value + ' ' + event.target[current_adult + 2].value; 
+            info[`adult${i}`][`email`] = event.target[current_adult + 3].value; 
+            info[`adult${i}`][`phone`] = `+${event.target[current_adult + 4].value + event.target[current_adult + 5].value}`; 
+            info[`adult${i}`][`employment_info`] = `${event.target[current_adult + 6].value}`; 
+            info[`adult${i}`][`time_at_current_job`] = `${event.target[current_adult + 7].value}`;
+            current_adult += 8
             adultInfo.push(info)
         }
 
@@ -254,6 +254,8 @@ class VacancyForm extends Component{
                                     <div className="form-row">
                                         <div className="name">Ages *</div>
                                         <div className="value">
+                                        Please specify the ages below (For example: 5 and 7 years old)
+
                                             <div className="input-group">
                                                 <input className="input--style-5" type="text" name={`ages_info`} required />
                                             </div>
