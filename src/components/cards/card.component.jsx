@@ -12,9 +12,9 @@ class Card extends Component {
             <div className="card">
                 <div className="card-content">
                     <div className="card-body">
-                        <h4 className="card-title" style={{fontWeight: "700"}}>{this.props.name}</h4>
+                        <h4 className="card-title" style={{fontWeight: "700"}}>{this.props.title}</h4>
                         <p className="card-text">
-                            {this.props.description}
+                            {this.props.textBody}
                         </p>
 
                         <div>
@@ -26,7 +26,7 @@ class Card extends Component {
                    
                 </div>
                 <div className="card-footer d-flex justify-content-end" >
-                    <button className="btn btn-primary block">View More</button>
+                    <button className="btn btn-primary block">View more</button>
                 </div>
             </div>
         );

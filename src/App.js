@@ -3,19 +3,19 @@ import './App.css';
 
 import { Routes, Route } from 'react-router-dom';
 
-import VacancyForm from './components/form/vacancyForm.component.jsx';
+import VacancyForm from './components/forms/VacancyForm.component.jsx';
 import Dashboard from './components/dashboard/dashboard.component.jsx';
-import SideBar from './components/sideBar/sideBar.component.jsx'
-import FormInformation from './components/form/formInformation.component.jsx'
+import Sidebar from './components/sidebar/sidebar.component.jsx'
+import FormInformation from './components/forms/FormInformation.component.jsx'
+import CreateForm from './components/forms/CreateForm.component';
 
 function App() {
   return (
     <>
-      <SideBar />
-
       <Routes>
         <Route path="/" element={<Dashboard />} />
-        <Route path="/Form-information" element={<FormInformation />} />
+        <Route path="/form-information" element={<FormInformation />} />
+        <Route path="/create-form" element={<CreateForm />} />
       </Routes>
 
     </>

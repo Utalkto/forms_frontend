@@ -1,6 +1,7 @@
 import { Component } from "react";
 
-import HeadCards from "../cards/HeaderCards.component";
+import HeadCards from "../cards/HeaderCards.component.jsx";
+import Sidebar from "../sidebar/sidebar.component.jsx";
 
 class Dashboard extends Component {
 
@@ -19,7 +20,11 @@ class Dashboard extends Component {
 
     render() {
         return (
+
             <div id="app">
+                
+                <Sidebar />
+
                 <div id="main">
 
                     <div className="page-heading">
@@ -37,7 +42,7 @@ class Dashboard extends Component {
                                 card2Name={"Active Forms"}
 
                                 card3Value={this.state.visitFromForms}
-                                card3Name={"Forms Visits"}
+                                card3Name={"Form Visits"}
 
                                 card4Value={this.state.dataFromForms}
                                 card4Name={"Data From Forms"}

@@ -1,7 +1,7 @@
 import { Component } from 'react';
 
 // styles
-import './vacancyForm.styles.css';
+// import './vacancyForm.styles.css';
 
 // components
 import AdultFields from '../adult-fields/adultFields.component.jsx';

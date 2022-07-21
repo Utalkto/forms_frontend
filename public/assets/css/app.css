@@ -849,7 +849,8 @@
     color: #435ebe;
     font-weight: 700;
   }
-  .sidebar-wrapper .menu .submenu .submenu-item a {
+  .sidebar-wrapper .menu .submenu .submenu-item a, 
+  .sidebar-wrapper .menu .submenu .submenu-item button {
     padding: 0.7rem 2rem;
     display: block;
     color: #25396f;
@@ -857,8 +858,12 @@
     font-weight: 600;
     letter-spacing: 0.5px;
     transition: all 0.3s;
+    border: none;
+    background: none;
   }
-  .sidebar-wrapper .menu .submenu .submenu-item a:hover {
+  .sidebar-wrapper .menu .submenu .submenu-item a:hover,
+  .sidebar-wrapper .menu .submenu .submenu-item button:hover
+  {
     margin-left: 0.3rem;
   }
   @media screen and (max-width: 1199px) {
