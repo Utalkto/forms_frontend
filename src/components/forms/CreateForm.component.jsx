@@ -9,30 +9,83 @@ import Sidebar from "../sidebar/sidebar.component.jsx";
 const inputInfo = {
     0: {
         'type': 'text',
-        'placeholer': 'placeholder',
+        'placeholder': 'click to edit',
         'label': 'label',
         'name': 'simpleInputField',
+        'inputTypeName': 'simpleInputField',
+        'required': false,
+        'scoreEnabled': false,
+        'maxScore': 1,
+
+        'element_type': 1,
     },
     // for first name
     1: {
         'type': 'text',
-        'placeholer': 'Enter your first name',
+        'placeholder': 'Enter your first name',
         'label': 'First Name',
         'name': 'First Name',
+        'inputTypeName': 'FirstName',
+        'required': true,
+        'scoreEnabled': false,
+        'maxScore': 1,
+
+        'element_type': 2,
     },
     // for last name
     2: {
         'type': 'text',
-        'placeholer': 'Enter your last name',
+        'placeholder': 'Enter your last name',
         'label': 'Last Name',
         'name': 'Last Name',
+        'inputTypeName': 'LastName',
+        'required': true,
+        'scoreEnabled': false,
+        'maxScore': 1,
+
+        'element_type': 3,
     },
     // for email
     3: {
         'type': 'email',
-        'placeholer': 'Enter your email',
+        'placeholder': 'Enter your email',
         'label': 'Email',
         'name': 'Email',
+        'inputTypeName': 'Email',
+        'required': true,
+        'scoreEnabled': false,
+        'maxScore': 1,
+
+        'element_type': 4,
+    },
+    // for select
+    4: {
+        'type': 'select',
+        'placeholder': 'Select your option',
+        'label': 'Select',
+        'name': 'Select',
+        'inputTypeName': 'Select',
+        'required': false,
+        'scoreEnabled': false,
+        'maxScore': 1,
+
+        'options' : [
+            {
+                'value': 'option1',
+                'score' : 0,
+            },
+            {
+                'value': 'option2',
+                'score' : 0,
+            },
+            {
+                'value': 'option3',
+                'score' : 0,
+            },
+
+        ],
+
+        'element_type': 5,
     }
 }
 
@@ -51,6 +104,7 @@ class CreateForm extends Component {
         mainMargin : '300px',
 
         currentComponentIndex : 0,
+        secondIndex : false,
 
         formElements : [ 
             
@@ -58,24 +112,29 @@ class CreateForm extends Component {
                 name : 'Form Title',
                 type : 'text',
                 value : 'Click here to edit the title of the form',
-                id : '1'
+                inputTypeName : 'formTitle',
+                id : '1',
+                element_type : 0,
             },
             {
                 name : 'Form Body',
                 type : 'text',
                 value : 'Click here to edit the body text of the form',
-                id : '2'
+                inputTypeName : 'formBody',
+                id : '2',
+                element_type : 0,
             },
         ]
   
     }
 
 
-    openRightbar = (componentIndex) => {
+    openRightbar = (componentIndex, secondIndex) => {
         this.setState({
             mainWidth: '70%',
             mainMargin: '20px',
             currentComponentIndex: componentIndex,
+            secondIndex: secondIndex,
         });
     }
 
@@ -86,64 +145,205 @@ class CreateForm extends Component {
         });
     }
 
+    updateComponentElement = (e, index, secondIndex, elementToUpdate) => {
 
-    updateComponentValue = (e, index) => {
+
+        const trueOrFalseComponents = ['required', 'scoreEnabled'];
 
         const map = this.state.formElements.map((element, i) => {
 
             if (i === index){
-                return {
-                    ...this.state.formElements[index],
-                    value : e.target.value
+
+                if (secondIndex !== false){
+
+                    let val = this.state.formElements[index].map((element, i) => {
+
+                        if (i === secondIndex){
+
+                            let valueToReturn = {
+                                ...this.state.formElements[index][secondIndex],
+                            }   
+
+                            if (trueOrFalseComponents.includes(elementToUpdate)) {
+                                valueToReturn[elementToUpdate] = e.target.checked;
+                            }
+                            else {
+                                valueToReturn[elementToUpdate] = e.target.value;
+
+                            }
+                            
+                            return valueToReturn;
+                        }
+
+                        return element;
+
+                    })
+                    return {
+                        val
+                    }
+
+                    
                 }
+                else {
+                    let valueToReturn = {
+                        ...this.state.formElements[index],
+                    }
+
+                    if (trueOrFalseComponents.includes(elementToUpdate)) {
+                        valueToReturn[elementToUpdate] = e.target.checked;
+                    }
+                    else {
+                        valueToReturn[elementToUpdate] = e.target.value;
+
+                    }
+                    
+                    return valueToReturn;
+                }
+
             }
 
             return element;
         })
 
 
+        let convertedMap = map.map((element, i) => {
+            
+            // check if element is an array and return a list of its objects
+
+            if (Array.isArray(element['val'])){
+                return element['val'].map((el, i) => {
+                    return el;
+                })
+            }
+
+            return element;
+        })
+
         this.setState({
             ...this.state,
-            formElements : map
+            formElements : convertedMap
         })
     }
 
+
     addNewFormElement = (type) => {
-
-        type.forEach(t => {
-            this.setState({
-                ...this.state,
-                totalElements : this.state.totalElements + 1,
-
-                formElements :
-                [
-                    ...this.state.formElements,
+        let val = [];
+        
+        if (type.length > 1 ){
+            let forList = [];
+            // create a for each loop to create a new object for each element in the array
+            type.forEach((element, i) => {
+                forList.push(
                     {
-                        name : inputInfo[t].name,
-                        type : inputInfo[t].type,
-                        placeholder : inputInfo[t].placeholder,
-                        label : inputInfo[t].label,
-                        value : '',
-                        id : `element${this.state.totalElements + 1}`
-                    }
-                ]
-            });
-        });
-    }
+                    name : inputInfo[type[i]].name,
+                    type : inputInfo[type[i]].type,
+                    placeholder : inputInfo[type[i]].placeholder,
+                    label : inputInfo[type[i]].label,
+                    value : '',
+                    required : inputInfo[type[i]].required,
+                    inputTypeName : inputInfo[type[i]].inputTypeName,
+                    id : `element${this.state.totalElements + 1}`,
+                    element_type : inputInfo[type[i]].element_type,
+                }
+                )
+            })
 
-    deleteFormElement = (componentIndex) => {
+            val = forList;
+
+        } else if (inputInfo[type[0]].type === 'select'){
+
+            val = {
+                name : inputInfo[type].name,
+                type : inputInfo[type].type,
+                placeholder : inputInfo[type].placeholder,
+                label : inputInfo[type].label,
+                value : '',
+                options : inputInfo[type].options,
+                required : inputInfo[type].required,
+                inputTypeName : inputInfo[type].inputTypeName,
+                id : `element${this.state.totalElements + 1}`,
+                element_type : inputInfo[type].element_type,
+            }
+
+            console.log('val');
+            console.log(val);
+        
+        } else {
+            val = {
+                name : inputInfo[type].name,
+                type : inputInfo[type].type,
+                placeholder : inputInfo[type].placeholder,
+                label : inputInfo[type].label,
+                value : '',
+                required : inputInfo[type].required,
+                inputTypeName : inputInfo[type].inputTypeName,
+                id : `element${this.state.totalElements + 1}`,
+                element_type : inputInfo[type].element_type,
+            }
+        }
+
+        
         this.setState({
             ...this.state,
-            totalElements : this.state.totalElements - 1,
-            formElements : {
-                ...this.state.formElements,
-                [componentIndex] : null
-            }
-        });
+            totalElements : this.state.totalElements + type.length,
+            formElements : [...this.state.formElements, val],
+        })
+
     }
 
 
+    deleteFormElement = (index) => {
+
+            let toDelete = 0;        
+
+            // check if the index given is an array in the formElements array
+            // if it is, then set Todelete to the length of the array
+            // otherwise, set Todelete to 1
+            if (Array.isArray(this.state.formElements[index])){
+                toDelete = this.state.formElements[index].length;
+            }
+            else {
+                toDelete = 1;
+            }
+            
+            let map = this.state.formElements.map((element, i) => {
+    
+                if (i !== index){
+                    return element;
+                }
+            });
+
+
+            // delete undefinded from map
+            map = map.filter((element) => {
+                return element !== undefined;
+            });
+
+            this.setState({
+                ...this.state,
+                formElements : map,
+                currentComponentIndex : 0,
+                secondIndex : false,
+                totalElements : this.state.totalElements - toDelete,
+            })
+
+            this.closeRightbar();
+
+
+
+    }
+
     render() {
+
+        let element;
+
+        if (this.state.secondIndex !== false) {
+            element = this.state.formElements[this.state.currentComponentIndex][this.state.secondIndex]
+        } else {
+            element = this.state.formElements[this.state.currentComponentIndex]
+        }                   
+
+
         return (
             <div className="d-flex">
 
@@ -211,13 +411,16 @@ class CreateForm extends Component {
 
                 {
 
-                    this.state.mainMargin === '20px' &&
+                    this.state.mainMargin === '20px' && 
                     <Rightbar 
-                    element={this.state.formElements[this.state.currentComponentIndex]}
-                    componentIndex={this.state.currentComponentIndex}
+                    element={element}
+                    firstIndex={this.state.currentComponentIndex}
+                    secondIndex={this.state.secondIndex}
                     functions={{
                         'closeRightBar':this.closeRightbar,
-                        'updateComponentValue': this.updateComponentValue,
+                        'updateComponentElement': this.updateComponentElement,
+                        'deleteFormElement': this.deleteFormElement,
+                        
                     }} />
 
                 }

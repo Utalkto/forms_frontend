@@ -160,8 +160,18 @@ class Sidebar extends Component{
                                                             Email
                                                         </button>
                                                     </li>
-                                        
+
+                                                    <li className="submenu-item ">
+                                                        <button 
+                                                            onClick={ 
+                                                                () => this.props.functions.addNewFormElement([4])
+                                                            }
+                                                        >
+                                                            Select Input
+                                                        </button>
+                                                    </li>
                                                 </ul>
+
                                         }
                                     </li>
                                 </ul>
